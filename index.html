@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#07110d">
+<title>Sistema BRP • Meta Personalizada</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#07110d;--card:#101b16;--card2:#15231c;--line:#26372e;
+  --green:#20d47a;--green2:#0e9f58;--white:#f3f7f5;--muted:#94a79d;
+  --yellow:#ffd34d;--red:#ff5d68;--blue:#55a8ff;
+}
+body{margin:0;background:
+ radial-gradient(circle at 10% 0%,rgba(32,212,122,.12),transparent 35%),
+ radial-gradient(circle at 100% 15%,rgba(85,168,255,.08),transparent 30%),
+ linear-gradient(160deg,#07110d,#0a1410 55%,#06100c);
+ color:var(--white);font-family:Arial,Helvetica,sans-serif;min-height:100vh;padding-bottom:82px}
+button,input,select{font:inherit}
+button{cursor:pointer;border:0}
+.app{max-width:760px;margin:auto;padding:14px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.brand{font-weight:900;letter-spacing:.5px}.brand span{color:var(--green)}
+.clock{font-size:12px;color:var(--muted)}
+.hero{background:linear-gradient(145deg,rgba(23,42,32,.98),rgba(10,22,16,.98));border:1px solid var(--line);border-radius:24px;padding:20px;box-shadow:0 15px 45px #0005}
+.kicker{font-size:12px;color:var(--green);font-weight:800;letter-spacing:1.5px}
+.hero h1{font-size:26px;margin:5px 0 16px}
+.balance{font-size:34px;font-weight:900;word-break:break-word}
+.label{color:var(--muted);font-size:12px}
+.progress-wrap{margin-top:18px}
+.progress-bg{height:12px;background:#07100c;border-radius:99px;overflow:hidden;border:1px solid #23362b}
+.progress{height:100%;width:0;background:linear-gradient(90deg,var(--green2),var(--green));border-radius:99px;transition:.3s}
+.progress-row{display:flex;justify-content:space-between;margin-top:7px;font-size:12px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.card{background:rgba(16,27,22,.94);border:1px solid var(--line);border-radius:18px;padding:15px}
+.card h3{margin:0 0 10px;font-size:15px}.big{font-size:20px;font-weight:900}
+.green{color:var(--green)}.yellow{color:var(--yellow)}.blue{color:var(--blue)}
+.section-title{display:flex;justify-content:space-between;align-items:center;margin:20px 2px 10px}
+.section-title h2{font-size:18px;margin:0}.section-title small{color:var(--muted)}
+.tab{display:none}.tab.active{display:block}
+.form{display:grid;gap:9px}
+input,select{width:100%;background:#0a1510;color:var(--white);border:1px solid var(--line);border-radius:12px;padding:13px;outline:none}
+input:focus,select:focus{border-color:var(--green)}
+.btn{width:100%;padding:13px;border-radius:12px;background:var(--green);color:#031008;font-weight:900}
+.btn.secondary{background:#1c2c24;color:var(--white);border:1px solid var(--line)}
+.btn.yellow{background:var(--yellow);color:#171100}
+.btn.red{background:#3a171b;color:#fff;border:1px solid #5a252c}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.job-head{display:flex;align-items:center;gap:12px}.icon{font-size:28px}
+.job-value{font-size:25px;font-weight:900;margin:10px 0}
+.note{font-size:12px;color:var(--muted);line-height:1.5}
+.routine{display:grid;gap:8px}
+.routine-item{display:grid;grid-template-columns:82px 1fr auto;gap:9px;align-items:center;background:#0d1813;border:1px solid var(--line);border-radius:13px;padding:11px}
+.routine-time{font-size:12px;color:var(--muted);font-weight:800}.routine-name{font-weight:800;font-size:13px}.routine-pay{font-size:11px;color:var(--green);text-align:right}
+.milestones{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.mile{padding:12px;border-radius:13px;background:#0d1813;border:1px solid var(--line);font-size:13px}.mile.done{border-color:var(--green);color:var(--green)}.mile strong{display:block;font-size:16px;margin-top:3px}
+.history{display:grid;gap:8px}.hist{background:#0d1813;border:1px solid var(--line);border-radius:13px;padding:11px}.hist-top{display:flex;justify-content:space-between;gap:10px}.hist small{color:var(--muted)}.hist .amount{font-weight:900;color:var(--green)}
+.empty{color:var(--muted);text-align:center;padding:20px}
+.bottom{position:fixed;z-index:20;bottom:0;left:0;right:0;background:rgba(6,15,11,.96);backdrop-filter:blur(15px);border-top:1px solid var(--line);padding:8px 6px calc(8px + env(safe-area-inset-bottom))}
+.nav{max-width:760px;margin:auto;display:flex;gap:5px;overflow-x:auto}.nav button{flex:1;min-width:76px;background:transparent;color:var(--muted);padding:7px 4px;border-radius:11px;font-size:10px;font-weight:800}.nav button span{display:block;font-size:19px;margin-bottom:2px}.nav button.active{background:#163025;color:var(--green)}
+.toast{position:fixed;z-index:50;left:50%;bottom:88px;transform:translateX(-50%) translateY(20px);background:#eafbf2;color:#062012;padding:11px 16px;border-radius:12px;font-weight:800;font-size:13px;opacity:0;pointer-events:none;transition:.25s;box-shadow:0 10px 30px #0006}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+hr{border:0;border-top:1px solid var(--line);margin:15px 0}
+@media(min-width:600px){.grid{grid-template-columns:repeat(4,1fr)}.milestones{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="brand">🇧🇷 BRP <span>• META PERSONALIZADA</span></div>
+    <div class="clock" id="clock">--:--</div>
+  </div>
+  <section class="hero">
+    <div class="kicker">PROGRESSO DA META</div>
+    <h1 id="metaTitle">Defina sua meta</h1>
+    <div class="balance" id="total">R$ 0</div>
+    <div class="progress-wrap">
+      <div class="progress-bg"><div class="progress" id="progress"></div></div>
+      <div class="progress-row"><span id="percent">0%</span><span id="metaText">Defina a meta</span></div>
+    </div>
+  </section>
+  <div class="grid">
+    <div class="card"><div class="label">🏦 BANCO</div><div class="big" id="bank">R$ 0</div></div>
+    <div class="card"><div class="label">💵 NA MÃO</div><div class="big yellow" id="cash">R$ 0</div></div>
+    <div class="card"><div class="label">🎯 FALTA</div><div class="big" id="missing">R$ 0</div></div>
+    <div class="card"><div class="label">📊 GANHO REGISTRADO</div><div class="big green" id="earned">R$ 0</div></div>
+  </div>
+  <div id="home" class="tab active">
+    <div class="section-title"><h2>🎯 Sua Meta</h2></div>
+    <div class="card">
+      <div class="form">
+        <input id="customMeta" type="number" inputmode="decimal" placeholder="Digite o valor da sua meta (R$)">
+        <button class="btn" onclick="setMeta()">✅ Definir Meta</button>
+      </div>
+    </div>
+    
+    <div class="section-title"><h2>⚡ Ações rápidas</h2></div>
+    <div class="card">
+      <div class="form">
+        <select id="quickJob">
+          <option>Astronauta</option><option>SAMU</option><option>Mecânico</option>
+          <option>Lixeiro</option><option>Motorista de Jato</option>
+          <option>Instalador de Internet</option><option>DNIT</option>
+          <option>Outro</option>
+        </select>
+        <input id="quickAmount" type="number" inputmode="decimal" placeholder="Valor recebido (R$)">
+        <input id="quickNote" placeholder="Observação / rota (opcional)">
+        <button class="btn" onclick="addQuick()">➕ Registrar faturamento</button>
+      </div>
+    </div>
+    <div class="section-title"><h2>🏦 Dinheiro</h2></div>
+    <div class="card">
+      <div class="form">
+        <input id="depositAmount" type="number" inputmode="decimal" placeholder="Valor para depositar">
+        <button class="btn secondary" onclick="deposit()">🏦 Passar da mão para o banco</button>
+      </div>
+      <hr>
+      <div class="actions">
+        <button class="btn yellow" onclick="changeCashPrompt()">💵 Ajustar mão</button>
+        <button class="btn secondary" onclick="changeBankPrompt()">🏦 Ajustar banco</button>
+      </div>
+    </div>
+    <div class="section-title"><h2>🕘 Rotina 06:00–22:00</h2><small>base da meta</small></div>
+    <div class="routine">
+      <div class="routine-item"><div class="routine-time">06–07</div><div class="routine-name">🚀 Astronauta</div><div class="routine-pay">R$ 6.900/h</div></div>
+      <div class="routine-item"><div class="routine-time">07–09</div><div class="routine-name">🚑 SAMU</div><div class="routine-pay">variável</div></div>
+      <div class="routine-item"><div class="routine-time">09–10</div><div class="routine-name">🚀 Astronauta</div><div class="routine-pay">R$ 6.900/h</div></div>
+      <div class="routine-item"><div class="routine-time">10–12</div><div class="routine-name">🔧 Mecânico</div><div class="routine-pay">R$ 1k / R$ 2k</div></div>
+      <div class="routine-item"><div class="routine-time">12–13</div><div class="routine-name">🚀 Astronauta</div><div class="routine-pay">R$ 6.900/h</div></div>
+      <div class="routine-item"><div class="routine-time">13–15</div><div class="routine-name">🗑️ Lixeiro</div><div class="routine-pay">variável</div></div>
+      <div class="routine-item"><div class="routine-time">15–16</div><div class="routine-name">🌐 Instalador Internet</div><div class="routine-pay">variável</div></div>
+      <div class="routine-item"><div class="routine-time">16–18</div><div class="routine-name">🚑 SAMU</div><div class="routine-pay">variável</div></div>
+      <div class="routine-item"><div class="routine-time">18–19</div><div class="routine-name">🚀 Astronauta</div><div class="routine-pay">R$ 6.900/h</div></div>
+      <div class="routine-item"><div class="routine-time">19–21</div><div class="routine-name">🛣️ DNIT</div><div class="routine-pay">variável</div></div>
+      <div class="routine-item"><div class="routine-time">21–22</div><div class="routine-name">🔧 Mecânico</div><div class="routine-pay">R$ 2k blindado</div></div>
+    </div>
+    <div class="section-title"><h2>🔥 Regras</h2></div>
+    <div class="card note">
+      1. Não gastar sem necessidade.<br>
+      2. Guardar a maior parte do que ganhar.<br>
+      3. Priorizar o que estiver rendendo mais.<br>
+      4. Conferir o saldo no fim do dia.
+    </div>
+  </div>
+  
+  <div id="astronauta" class="tab">
+    <div class="section-title"><h2>🚀 Astronauta</h2></div>
+    <div class="card">
+      <div class="job-head"><div class="icon">🚀</div><div><b>Pagamento por hora</b></div></div>
+      <div class="job-value">R$ 6.900 / hora</div>
+      <div class="form">
+        <input id="astroHours" type="number" min="0.1" step="0.1" inputmode="decimal" placeholder="Quantas horas trabalhou?">
+        <input id="astroNote" placeholder="Observação (opcional)">
+        <button class="btn" onclick="registerAstro()">🚀 Registrar horas</button>
+      </div>
+    </div>
+  </div>
+  
+  <div id="samu" class="tab">
+    <div class="section-title"><h2>🚑 SAMU</h2></div>
+    <div class="card">
+      <div class="note">Valor variável — use o valor real recebido.</div>
+      <div class="form">
+        <input id="samuAmount" type="number" inputmode="decimal" placeholder="Total recebido">
+        <input id="samuCalls" type="number" inputmode="numeric" placeholder="Qtd. chamados (opcional)">
+        <button class="btn" onclick="registerSpecial('SAMU','samuAmount','Chamados: ')">➕ Registrar SAMU</button>
+      </div>
+    </div>
+  </div>
+  
+  <div id="mecanico" class="tab">
+    <div class="section-title"><h2>🔧 Mecânico</h2></div>
+    <div class="card">
+      <div class="actions">
+        <button class="btn" onclick="fixedJob('Mecânico — Blindado',2000)">🛡️ + R$ 2.000</button>
+        <button class="btn secondary" onclick="fixedJob('Mecânico — Normal',1000)">🚗 + R$ 1.000</button>
+      </div>
+      <hr>
+      <div class="form">
+        <input id="mecBlind" type="number" min="0" inputmode="numeric" placeholder="Qtd. blindados">
+        <input id="mecNorm" type="number" min="0" inputmode="numeric" placeholder="Qtd. normais">
+        <button class="btn" onclick="calcMec()">🧮 Registrar total</button>
+      </div>
+    </div>
+  </div>
+  
+  <div id="lixeiro" class="tab">
+    <div class="section-title"><h2>🗑️ Lixeiro</h2></div>
+    <div class="card">
+      <div class="note">Valor variável — registre o valor da rota.</div>
+      <div class="form">
+        <input id="lixeiroAmount" type="number" inputmode="decimal" placeholder="Pagamento da rota">
+        <button class="btn" onclick="registerSpecial('Lixeiro','lixeiroAmount','')">➕ Registrar rota</button>
+      </div>
+    </div>
+  </div>
+  
+  <div id="instalador" class="tab">
+    <div class="section-title"><h2>🌐 Instalador de Internet</h2></div>
+    <div class="card">
+      <div class="note">Valor variável — digite o valor recebido por instalação/serviço.</div>
+      <div class="form">
+        <input id="instaladorAmount" type="number" inputmode="decimal" placeholder="Valor recebido">
+        <input id="instaladorNote" placeholder="Ex.: 2 instalações (opcional)">
+        <button class="btn" onclick="registerSpecial('Instalador de Internet','instaladorAmount','')">➕ Registrar</button>
+      </div>
+    </div>
+  </div>
+  
+  <div id="dnit" class="tab">
+    <div class="section-title"><h2>🛣️ DNIT</h2></div>
+    <div class="card">
+      <div class="note">Valor variável — digite o valor recebido.</div>
+      <div class="form">
+        <input id="dnitAmount" type="number" inputmode="decimal" placeholder="Valor recebido">
+        <input id="dnitNote" placeholder="Observação (opcional)">
+        <button class="btn" onclick="registerSpecial('DNIT','dnitAmount','')">➕ Registrar</button>
+      </div>
+    </div>
+  </div>
+  
+  <div id="jato" class="tab">
+    <div class="section-title"><h2>✈️ Motorista de Jato</h2></div>
+    <div class="card">
+      <div class="note">Registre cada rota.</div>
+      <div class="form">
+        <input id="jatoFrom" placeholder="Origem">
+        <input id="jatoTo" placeholder="Destino">
+        <input id="jatoAmount" type="number" inputmode="decimal" placeholder="Valor da rota">
+        <button class="btn" onclick="registerJato()">✈️ Registrar</button>
+      </div>
+    </div>
+  </div>
+  
+  <div id="historico" class="tab">
+    <div class="section-title"><h2>📜 Histórico</h2><button class="btn red" style="width:auto;padding:8px 10px;font-size:11px" onclick="clearHistory()">Limpar</button></div>
+    <div id="historyList" class="history"></div>
+  </div>
+</div>
+<div class="bottom">
+  <div class="nav">
+    <button class="active" data-tab="home"><span>🏠</span>Painel</button>
+    <button data-tab="astronauta"><span>🚀</span>Astro</button>
+    <button data-tab="samu"><span>🚑</span>SAMU</button>
+    <button data-tab="mecanico"><span>🔧</span>Mecânico</button>
+    <button data-tab="lixeiro"><span>🗑️</span>Lixeiro</button>
+    <button data-tab="instalador"><span>🌐</span>Internet</button>
+    <button data-tab="dnit"><span>🛣️</span>DNIT</button>
+    <button data-tab="jato"><span>✈️</span>Jato</button>
+    <button data-tab="historico"><span>📜</span>Histórico</button>
+  </div>
+</div>
+<div class="toast" id="toast">Registrado!</div>
+<script>
+const KEY="BRP_META_CUSTOM";
+let state=JSON.parse(localStorage.getItem(KEY)||"null")||{
+  bank:0,cash:0,meta:null,earned:0,history:[]
+};
+function money(v){return "R$ "+Number(v||0).toLocaleString("pt-BR",{minimumFractionDigits:0,maximumFractionDigits:2})}
+function save(){localStorage.setItem(KEY,JSON.stringify(state));render()}
+function total(){return Number(state.bank)+Number(state.cash)}
+function toast(msg){const e=document.getElementById("toast");e.textContent=msg;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1600)}
+function setMeta(){
+  const v=Number(document.getElementById("customMeta").value);
+  if(!v||v<=0){toast("Digite um valor válido");return}
+  state.meta=v;
+  save();toast("Meta definida: "+money(v))
+}
+function addHistory(job,amount,note=""){
+  amount=Number(amount);
+  if(!amount||amount<=0){toast("Digite um valor válido");return false}
+  state.cash+=amount;state.earned+=amount;
+  state.history.unshift({job,amount,note,time:new Date().toLocaleString("pt-BR")});
+  save();toast("+"+money(amount)+" registrado");return true
+}
+function addQuick(){
+  const job=document.getElementById("quickJob").value;
+  const amount=document.getElementById("quickAmount").value;
+  const note=document.getElementById("quickNote").value;
+  if(addHistory(job,amount,note)){
+    document.getElementById("quickAmount").value="";
+    document.getElementById("quickNote").value=""
+  }
+}
+function fixedJob(job,amount){addHistory(job,amount)}
+function registerAstro(){
+  const hours=Number(document.getElementById("astroHours").value)||0;
+  if(hours<=0){toast("Digite as horas");return}
+  const amount=hours*6900;
+  if(addHistory("Astronauta",amount,`${hours} hora(s)`)){
+    document.getElementById("astroHours").value=""
+  }
+}
+function registerSpecial(job,id,prefix){
+  const amount=document.getElementById(id).value;
+  if(addHistory(job,amount,"")){
+    document.getElementById(id).value=""
+  }
+}
+function calcMec(){
+  const b=Number(document.getElementById("mecBlind").value)||0;
+  const n=Number(document.getElementById("mecNorm").value)||0;
+  const amount=b*2000+n*1000;
+  if(addHistory("Mecânico",amount,`${b} blindados • ${n} normais`)){
+    document.getElementById("mecBlind").value="";
+    document.getElementById("mecNorm").value=""
+  }
+}
+function registerJato(){
+  const from=document.getElementById("jatoFrom").value;
+  const to=document.getElementById("jatoTo").value;
+  const amount=document.getElementById("jatoAmount").value;
+  if(addHistory("Motorista de Jato",amount,`${from} → ${to}`)){
+    document.getElementById("jatoFrom").value="";
+    document.getElementById("jatoTo").value="";
+    document.getElementById("jatoAmount").value=""
+  }
+}
+function deposit(){
+  const v=Number(document.getElementById("depositAmount").value);
+  if(!v||v<=0){toast("Valor inválido");return}
+  if(v>state.cash){toast("Sem dinheiro suficiente");return}
+  state.cash-=v;state.bank+=v;
+  state.history.unshift({job:"Depósito",amount:v,note:"Mão → Banco",time:new Date().toLocaleString("pt-BR")});
+  document.getElementById("depositAmount").value="";
+  save();toast("Depositado")
+}
+function changeCashPrompt(){
+  const v=prompt("Novo valor na mão:",state.cash);
+  if(v!==null&&!isNaN(v)&&Number(v)>=0){state.cash=Number(v);save();toast("Atualizado")}
+}
+function changeBankPrompt(){
+  const v=prompt("Novo saldo do banco:",state.bank);
+  if(v!==null&&!isNaN(v)&&Number(v)>=0){state.bank=Number(v);save();toast("Atualizado")}
+}
+function clearHistory(){
+  if(confirm("Apagar histórico? Saldo não muda.")){state.history=[];state.earned=0;save()}
+}
+function render(){
+  const t=total();
+  const meta=state.meta||0;
+  const p=meta>0?Math.min(100,t/meta*100):0;
+  const missing=Math.max(0,meta-t);
+  
+  document.getElementById("total").textContent=money(t);
+  document.getElementById("bank").textContent=money(state.bank);
+  document.getElementById("cash").textContent=money(state.cash);
+  document.getElementById("missing").textContent=meta?money(missing):"—";
+  document.getElementById("earned").textContent=money(state.earned);
+  document.getElementById("progress").style.width=p+"%";
+  document.getElementById("percent").textContent=meta?p.toFixed(2).replace(".",",")+"%":"0%";
+  document.getElementById("metaText").textContent=meta?"Meta: "+money(meta):"Defina sua meta abaixo";
+  document.getElementById("metaTitle").textContent=meta?"Rumo à Meta":"Defina sua meta";
+  
+  const h=document.getElementById("historyList");
+  h.innerHTML=state.history.length?state.history.map(x=>`<div class="hist"><div class="hist-top"><b>${x.job}</b><span class="amount">+${money(x.amount)}</span></div><small>${x.note||""} • ${x.time}</small></div>`).join(""):`<div class="card empty">Nenhum registro.</div>`;
+}
+document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");
+  document.querySelectorAll(".tab").forEach(x=>x.classList.remov
